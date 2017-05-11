@@ -23,7 +23,7 @@
 </head>
 
 <body>
-<div ng-app="myApp.cart" ng-controller="cartCtrl"  ></div>
+<div ng-app="myApp.cart" ng-controller="cartCtrl" data-ng-init="init()" >
 <!-- Static navbar -->
 
 <div class="container">
@@ -40,7 +40,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="x in order.items">
+                <tr data-ng-repeat="x in order.items">
                     <td class="col-sm-8 col-md-6">
                         <div class="media">
                             <div class="media-body">
@@ -54,7 +54,7 @@
                     <td class="col-sm-1 col-md-1 text-center"><strong>{{x.size}}</strong></td>
                     <td class="col-sm-1 col-md-1">
                         <button ng-click="removeItem($index)" type="button" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-remove"></span> Remove
+                            <span class="glyphicon glyphicon-remove"></span>
                         </button></td>
                 </tr>
                 <tr>
@@ -83,9 +83,9 @@
 <button ng-click="updateCart()">Update</button>
 
 
-
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+</div>
 </body>
 </html>

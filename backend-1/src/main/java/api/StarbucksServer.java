@@ -1,11 +1,8 @@
-package api ;
+package api;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import org.jongo.Jongo;
-import org.jongo.MongoCollection;
-import org.jongo.MongoCursor;
-import org.restlet.*;
+import org.restlet.Application;
+import org.restlet.Component;
+import org.restlet.Restlet;
 import org.restlet.data.Protocol;
 import org.restlet.routing.Router;
 import org.restlet.service.CorsService;
@@ -55,13 +52,14 @@ public class StarbucksServer extends Application {
     public Restlet createInboundRoot() {
         Router router = new Router(getContext()) ;
         router.attach( "/v3/starbucks/order/{order_id}", OrderResource.class ) ;
-        router.attach( "/v3/starbucks/order/{order_id}/pay", PaymentResource.class ) ;        
-        router.attach( "/v3/starbucks/order", OrderResource.class ) ;        
+        router.attach( "/v3/starbucks/order/{order_id}/pay", PaymentResource.class ) ;
+        router.attach( "/v3/starbucks/order", OrderResource.class ) ;
         router.attach( "/v3/starbucks/orders", OrdersResource.class ) ;
         router.attach( "/index", index.class ) ;
+        router.attach( "/v3/starbucks/cart", CartResource.class ) ;
+
         return router;
     }
-
 
 }
 

@@ -1,7 +1,7 @@
 package api;
 
 /**
- * Created by Srinivas on 4/25/2017.
+ * Created by Suraj on 4/19/2017.
  */
 
     public class Friend {

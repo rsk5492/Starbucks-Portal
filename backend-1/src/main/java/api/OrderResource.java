@@ -1,31 +1,19 @@
-package api ;
+package api;
 
 
+import org.json.JSONException;
+import org.restlet.data.Header;
+import org.restlet.data.Tag;
+import org.restlet.ext.crypto.DigestUtils;
+import org.restlet.ext.jackson.JacksonRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.resource.*;
+import org.restlet.util.Series;
 
-
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import org.jongo.Jongo;
-import org.jongo.MongoCollection;
-import org.jongo.MongoCursor;
-import org.json.* ;
-import org.restlet.Response;
-import org.restlet.representation.* ;
-import org.restlet.ext.json.* ;
-import org.restlet.resource.* ;
-import org.restlet.ext.jackson.* ;
-import org.restlet.data.Tag ;
-import org.restlet.data.Form ;
-import org.restlet.data.Header ;
-import org.restlet.data.Digest ;
-import org.restlet.util.Series ;
-import org.restlet.ext.crypto.DigestUtils ;
-import java.io.IOException ;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import api.Order;
 
 public class OrderResource extends ServerResource {
 
@@ -69,7 +57,7 @@ public class OrderResource extends ServerResource {
             api.status = "error" ;
             api.message = "Order not found." ;
 
-            return new JacksonRepresentation<api.Status>(api) ;
+            return new JacksonRepresentation<Status>(api) ;
         }
         else {
             Order existing_order = StarbucksAPI.getOrder( order_id ) ;
@@ -78,11 +66,11 @@ public class OrderResource extends ServerResource {
                 api.Status api = new api.Status() ;
                 api.status = "error" ;
                 api.message = "Order not found." ;
-                return new JacksonRepresentation<api.Status>(api) ;
-            }                
+                return new JacksonRepresentation<Status>(api) ;
+            }
             else {
                 Representation result = new JacksonRepresentation<Order>(order) ;
-                try { 
+                try {
                     System.out.println( "Get Text: " + result.getText() ) ;
                     String  hash = DigestUtils.toMd5 ( result.getText() );
                     getResponse().getAccessControlAllowHeaders().add("*");
@@ -96,7 +84,7 @@ public class OrderResource extends ServerResource {
                     api.Status api = new api.Status() ;
                     api.status = "error" ;
                     api.message = "Server Error, Try Again Later." ;
-                    return new JacksonRepresentation<api.Status>(api) ;
+                    return new JacksonRepresentation<Status>(api) ;
                 }
             }
         }
@@ -110,14 +98,14 @@ public class OrderResource extends ServerResource {
     @Post
     public Representation post_action (Representation rep) throws IOException {
 
-        JacksonRepresentation<Order> orderRep = new JacksonRepresentation<Order> ( rep, Order.class ) ;
+        JacksonRepresentation<Order> orderRep = new JacksonRepresentation<Order>( rep, Order.class ) ;
 
         Order order = orderRep.getObject() ;
-        StarbucksAPI.setOrderStatus( order, getReference().toString(), StarbucksAPI.OrderStatus.PLACED ) ;
+        StarbucksAPI.setOrderStatus( order, getReference().toString(), StarbucksAPI.OrderStatus.INCART ) ;
         StarbucksAPI.placeOrder( order.id, order ) ;
 
         Representation result = new JacksonRepresentation<Order>(order) ;
-        try { 
+        try {
                 System.out.println( "Text: " + result.getText() ) ;
                 String  hash = DigestUtils.toMd5 ( result.getText() ) ;
                 result.setTag( new Tag( hash ) ) ;
@@ -128,7 +116,7 @@ public class OrderResource extends ServerResource {
                 api.Status api = new api.Status() ;
                 api.status = "error" ;
                 api.message = "Server Error, Try Again Later." ;
-                return new JacksonRepresentation<api.Status>(api) ;
+                return new JacksonRepresentation<Status>(api) ;
         }
     }
 
@@ -136,7 +124,7 @@ public class OrderResource extends ServerResource {
    @Put
     public Representation put_action (Representation rep) throws IOException {
 
-        JacksonRepresentation<Order> orderRep = new JacksonRepresentation<Order> ( rep, Order.class ) ;
+        JacksonRepresentation<Order> orderRep = new JacksonRepresentation<Order>( rep, Order.class ) ;
         Order order = orderRep.getObject() ;
 
         String order_id = getAttribute("order_id") ;
@@ -149,9 +137,9 @@ public class OrderResource extends ServerResource {
             api.status = "error" ;
             api.message = "Order not found." ;
 
-            return new JacksonRepresentation<api.Status>(api) ;
+            return new JacksonRepresentation<Status>(api) ;
 
-        }                
+        }
         else if ( existing_order != null && existing_order.status != StarbucksAPI.OrderStatus.PLACED ) {
 
             setStatus( org.restlet.data.Status.CLIENT_ERROR_PRECONDITION_FAILED ) ;
@@ -159,15 +147,15 @@ public class OrderResource extends ServerResource {
             api.status = "error" ;
             api.message = "Order Update Rejected." ;
 
-            return new JacksonRepresentation<api.Status>(api) ;
+            return new JacksonRepresentation<Status>(api) ;
         }
         else {
 
             StarbucksAPI.setOrderStatus( order, getReference().toString(), StarbucksAPI.OrderStatus.PLACED ) ;
             order.id = existing_order.id ;
-            StarbucksAPI.updateOrder( order.id, order ) ;  
+            StarbucksAPI.updateOrder( order.id, order ) ;
             Representation result = new JacksonRepresentation<Order>(order) ;
-            try { 
+            try {
                     System.out.println( "Text: " + result.getText() ) ;
                     String  hash = DigestUtils.toMd5 ( result.getText() ) ;
                     result.setTag( new Tag( hash ) ) ;
@@ -178,7 +166,7 @@ public class OrderResource extends ServerResource {
                     api.Status api = new api.Status() ;
                     api.status = "error" ;
                     api.message = "Server Error, Try Again Later." ;
-                    return new JacksonRepresentation<api.Status>(api) ;
+                    return new JacksonRepresentation<Status>(api) ;
             }
         }
     }
@@ -188,7 +176,7 @@ public class OrderResource extends ServerResource {
 
         String order_id = getAttribute("order_id") ;
         Order existing_order = StarbucksAPI.getOrder( order_id ) ;
-        
+
         if ( order_id == null || order_id.equals("")  || existing_order == null ) {
 
             setStatus( org.restlet.data.Status.CLIENT_ERROR_NOT_FOUND ) ;
@@ -196,9 +184,9 @@ public class OrderResource extends ServerResource {
             api.status = "error" ;
             api.message = "Order not found." ;
 
-            return new JacksonRepresentation<api.Status>(api) ;
+            return new JacksonRepresentation<Status>(api) ;
 
-        }        
+        }
         else if ( existing_order.status != StarbucksAPI.OrderStatus.PLACED ) {
 
             setStatus( org.restlet.data.Status.CLIENT_ERROR_PRECONDITION_FAILED ) ;
@@ -206,7 +194,7 @@ public class OrderResource extends ServerResource {
             api.status = "error" ;
             api.message = "Order Cancelling Rejected." ;
 
-            return new JacksonRepresentation<api.Status>(api) ;
+            return new JacksonRepresentation<Status>(api) ;
         }
         else {
 

@@ -1,5 +1,5 @@
 
-package api ;
+package api;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -22,9 +22,9 @@ public class StarbucksBarista implements Runnable {
 					System.out.println(Thread.currentThread().getName() + " Processed Order: " + order_id );
 					StarbucksAPI.setOrderStatus( order, StarbucksAPI.OrderStatus.PREPARING ) ;
 					try { Thread.sleep(20000); } catch ( Exception e ) {}  
-					StarbucksAPI.setOrderStatus( order, StarbucksAPI.OrderStatus.SERVED ) ;					
+					StarbucksAPI.setOrderStatus( order, StarbucksAPI.OrderStatus.SERVED ) ;
 					try { Thread.sleep(10000); } catch ( Exception e ) {}  
-					StarbucksAPI.setOrderStatus( order, StarbucksAPI.OrderStatus.COLLECTED ) ;				
+					StarbucksAPI.setOrderStatus( order, StarbucksAPI.OrderStatus.COLLECTED ) ;
 				}
 				else {
 					blockingQueue.put( order_id ) ;
